@@ -104,7 +104,7 @@ def main():
                 for setting in settings.setting:
                     if setting.canonicalName == 'telenor_se':
                         continue
-               	    print(setting.canonicalName)
+                    print(setting.canonicalName)
                     assert setting.canonicalName not in all_settings
                     all_settings[setting.canonicalName] = setting
             else:

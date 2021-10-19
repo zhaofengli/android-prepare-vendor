@@ -213,6 +213,7 @@
   "BoardConfigVendor": [],
   "device-vendor": [],
   "vendor-skip-files": [
+    "apex/com.android.vibrator.drv2624.apex",
     "bin/applypatch",
     "bin/awk",
     "bin/boringssl_self_test32",

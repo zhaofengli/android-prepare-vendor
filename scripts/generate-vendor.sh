@@ -131,6 +131,10 @@ has_vendor_size() {
   has_partition_size vendor "$1"
 }
 
+has_vendor_dlkm_size() {
+  has_partition_size vendor_dlkm "$1"
+}
+
 has_product_size() {
   has_partition_size product "$1"
 }
@@ -452,6 +456,7 @@ gen_board_vendor_mk() {
 gen_board_cfg_mk() {
   local inDir="$1"
   local v_img_sz
+  local v_dlkm_sz
   local p_img_sz
   local sysExt_img_sz
 
@@ -462,6 +467,8 @@ gen_board_cfg_mk() {
     echo "[-] Unknown vendor image size for '$DEVICE' device"
     abort 1
   fi
+
+  v_dlkm_sz="$(has_vendor_dlkm_size "$inDir")"
 
   # Then lets check if product partition size has been extracted from
   # previous data extraction script
@@ -496,6 +503,11 @@ gen_board_cfg_mk() {
       echo "  BOARD_SYSTEM_EXTIMAGE_PARTITION_SIZE := $sysExt_img_sz"
       echo 'endif'
       echo 'BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4'
+    fi
+    if [[ "$v_dlkm_sz" != "" ]]; then
+      echo 'BOARD_USES_VENDOR_DLKMIMAGE := true'
+      echo 'BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4'
+      echo 'TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm'
     fi
 
     # Android 11 workaround for including .vintf files in PRODUCT_COPY_FILES
@@ -1438,6 +1450,10 @@ mv "$BLOBS_LIST.tmp" "$BLOBS_LIST"
 
 if [[ "$VENDOR" == "google" ]]; then
   update_ab_ota_partitions "$DEVICE_VENDOR_MK"
+fi
+
+if [[ "$(has_vendor_dlkm_size "$INPUT_DIR")" != "" ]]; then
+  echo 'AB_OTA_PARTITIONS += vendor_dlkm' >> "$DEVICE_VENDOR_MK"
 fi
 
 # Generate file signatures list

@@ -472,6 +472,9 @@ $REPAIR_SCRIPT --method "$BYTECODE_REPAIR_METHOD" --input "$SYSTEM_ROOT" \
 # However, make it available to repaired data directory to have a single source
 # for next script
 ln -s "$FACTORY_IMGS_DATA/vendor" "$FACTORY_IMGS_R_DATA/vendor"
+if [[ -d "$FACTORY_IMGS_DATA/vendor_dlkm" ]]; then
+  ln -s "$FACTORY_IMGS_DATA/vendor_dlkm" "$FACTORY_IMGS_R_DATA/vendor_dlkm"
+fi
 if [[ -d "$FACTORY_IMGS_DATA/product" ]]; then
   ln -s "$FACTORY_IMGS_DATA/product" "$FACTORY_IMGS_R_DATA/product"
 fi
@@ -483,6 +486,9 @@ fi
 # $VGEN_SCRIPT will fail over to last known working default if image size
 # file not found when parsing data
 cp "$FACTORY_IMGS_DATA/vendor_partition_size" "$FACTORY_IMGS_R_DATA"
+if [[ -f "$FACTORY_IMGS_DATA/vendor_dlkm_partition_size" ]]; then
+  cp "$FACTORY_IMGS_DATA/vendor_dlkm_partition_size" "$FACTORY_IMGS_R_DATA"
+fi
 if [[ -f "$FACTORY_IMGS_DATA/product_partition_size" ]]; then
   cp "$FACTORY_IMGS_DATA/product_partition_size" "$FACTORY_IMGS_R_DATA"
 fi

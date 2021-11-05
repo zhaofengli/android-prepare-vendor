@@ -75,6 +75,10 @@ extract_vendor_partition_size() {
   extract_partition_size vendor "$1" "$2"
 }
 
+extract_vendor_dlkm_partition_size() {
+  extract_partition_size vendor_dlkm "$1" "$2"
+}
+
 extract_product_partition_size() {
   extract_partition_size product "$1" "$2"
 }
@@ -176,6 +180,11 @@ if [ -d "$VENDOR_DATA_OUT" ]; then
   rm -rf "${VENDOR_DATA_OUT:?}"/*
 fi
 
+VENDOR_DLKM_DATA_OUT="$OUTPUT_DIR/vendor_dlkm"
+if [ -d "$VENDOR_DLKM_DATA_OUT" ]; then
+  rm -rf "${VENDOR_DLKM_DATA_OUT:?}"/*
+fi
+
 PRODUCT_DATA_OUT="$OUTPUT_DIR/product"
 if [ -d "$PRODUCT_DATA_OUT" ]; then
   rm -rf "${PRODUCT_DATA_OUT:?}"/*
@@ -202,6 +211,7 @@ mkdir -p "$extractDir"
 extract_archive "$INPUT_ARCHIVE" "$extractDir"
 
 hasProductImg=false
+hasVendorDlkmImg=false
 hasSystemExtImg=false
 if [[ -f "$extractDir/system.img" && -f "$extractDir/vendor.img" ]]; then
   sysImg="$extractDir/system.img"
@@ -209,6 +219,10 @@ if [[ -f "$extractDir/system.img" && -f "$extractDir/vendor.img" ]]; then
   if [[ -f "$extractDir/product.img" ]]; then
     pImg="$extractDir/product.img"
     hasProductImg=true
+  fi
+  if [[ -f "$extractDir/vendor_dlkm.img" ]]; then
+    vendorDlkmImg="$extractDir/vendor_dlkm.img"
+    hasVendorDlkmImg=true
   fi
   if [[ -f "$extractDir/system_ext.img" ]]; then
     sysExtImg="$extractDir/system_ext.img"
@@ -226,6 +240,10 @@ else
   if [[ -f "$extractDir/images/product.img" ]]; then
     pImg="$extractDir/images/product.img"
     hasProductImg=true
+  fi
+  if [[ -f "$extractDir/images/vendor_dlkm.img" ]]; then
+    vendorDlkmImg="$extractDir/images/vendor_dlkm.img"
+    hasVendorDlkmImg=true
   fi
   if [[ -f "$extractDir/images/system_ext.img" ]]; then
     sysExtImg="$extractDir/images/system_ext.img"
@@ -251,6 +269,7 @@ fi
 # Convert from sparse to raw
 rawSysImg="$extractDir/images/system.img.raw"
 rawVImg="$extractDir/images/vendor.img.raw"
+rawVendorDlkmImg="$extractDir/images/vendor_dlkm.img.raw"
 rawPImg="$extractDir/images/product.img.raw"
 rawSysExtImg="$extractDir/images/system_ext.img.raw"
 
@@ -262,6 +281,12 @@ simg2img "$vImg" "$rawVImg" || {
   echo "[-] simg2img failed to convert vendor.img from sparse"
   abort 1
 }
+if [ $hasVendorDlkmImg = true ]; then
+  simg2img "$vendorDlkmImg" "$rawVendorDlkmImg" || {
+    echo "[-] simg2img failed to convert vendor_dlkm.img from sparse"
+    abort 1
+  }
+fi
 if [ $hasProductImg = true ]; then
   simg2img "$pImg" "$rawPImg" || {
     echo "[-] simg2img failed to convert product.img from sparse"
@@ -279,6 +304,9 @@ fi
 extract_vendor_partition_size "$rawVImg" "$OUTPUT_DIR"
 if [ $hasProductImg = true ]; then
   extract_product_partition_size "$rawPImg" "$OUTPUT_DIR"
+fi
+if [ $hasVendorDlkmImg = true ]; then
+  extract_vendor_dlkm_partition_size "$rawVendorDlkmImg" "$OUTPUT_DIR"
 fi
 if [ $hasSystemExtImg = true ]; then
   extract_system_ext_partition_size "$rawSysExtImg" "$OUTPUT_DIR"

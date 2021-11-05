@@ -872,6 +872,16 @@ gen_mk_for_bytecode() {
       fi
 
       if [[ "$ALLOW_PREOPT" = false || "$has_bc_file" = false || "$relSubRoot" =~ ^overlay/.* ]]; then
+        # Android 12 introduces changes to the dexpreopt system [1] which enforce
+        # that <uses-library> dependencies are declared in the build system as
+        # well. Prebuilt `.jar`s that we have confuse the checker and cause weird
+        # "not well-formed (invalid token)" errors because it will try to parse
+        # them as XML files [2].
+        #
+        # [1] https://source.android.com/devices/tech/dalvik/art-class-loader-context
+        # [2] https://cs.android.com/android/platform/superproject/+/android-12.0.0_r4:build/soong/scripts/manifest_check.py;l=283-288
+        echo "LOCAL_ENFORCE_USES_LIBRARIES := false"
+
         echo "LOCAL_DEX_PREOPT := false"
       fi
 

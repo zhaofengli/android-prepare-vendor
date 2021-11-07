@@ -36,17 +36,29 @@
     "system_ext/framework/oemrilhook.jar"
   ],
   "system_ext-other": [
+    "system_ext/etc/permissions/com.samsung.slsi.telephony.oemril.xml",
     "system_ext/etc/permissions/com.shannon.imsservice.xml",
     "system_ext/etc/permissions/com.shannon.qualifiednetworksservice.xml",
     "system_ext/etc/permissions/com.shannon.rcsservice.xml",
-    "system_ext/etc/permissions/com.samsung.slsi.telephony.oemril.xml",
     "system_ext/etc/permissions/oemrilhook.xml",
-    "system_ext/lib/libmediaadaptor.so",
+    "system_ext/lib64/libaptX_encoder.so",
     "system_ext/lib64/libmediaadaptor.so",
-    "system_ext/lib64/libaptX_encoder.so"
+    "system_ext/lib64/vendor.samsung_slsi.telephony.hardware.oemservice@1.0.so",
+    "system_ext/lib64/vendor.samsung_slsi.telephony.hardware.radioExternal@1.0.so",
+    "system_ext/lib/libmediaadaptor.so",
+    "system_ext/lib/vendor.samsung_slsi.telephony.hardware.oemservice@1.0.so",
+    "system_ext/lib/vendor.samsung_slsi.telephony.hardware.radioExternal@1.0.so"
   ],
   "BoardConfigVendor": [],
   "dep-dso": [
+  ],
+  "device-vendor": [
+    "PRODUCT_PROPERTY_OVERRIDES += \\",
+    "    persist.vendor.ril.ecc.xml=1 \\",
+    "    persist.vendor.ril.use_radio_hal=1.6 \\",
+    "    ro.vendor.config.build_carrier=europen \\",
+    "    ro.vendor.config.build_carrier=europen \\",
+    "    vendor.rild.libpath=libsitril.so"
   ],
   "forced-modules": [
     "android.hardware.authsecret@1.0.vendor:64",

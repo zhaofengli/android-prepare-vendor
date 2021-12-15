@@ -236,6 +236,7 @@
     "etc/fs_config_dirs",
     "etc/fs_config_files",
     "etc/fstab.gs101",
+    "etc/fstab.gs101-fips",
     "etc/fstab.persist",
     "etc/gnss/gps.cer",
     "etc/gnss/gps.xml",
